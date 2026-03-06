@@ -41,26 +41,28 @@
 // }
 
 
-const loadphone = async(searchText) =>{
+const loadphone = async(searchText,isShowAll) =>{
    const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
    const data = await res.json();
    const phones = data.data;
    console.log(phones);
-   displayPhones(phones);
+   displayPhones(phones,isShowAll);
 }
 
-const displayPhones = (phones) => {
+const displayPhones = (phones,isShowAll) => {
   const phoneContainer = document.getElementById('phone-container');
   phoneContainer.textContent = '';
 const showAllContainer = document.getElementById('show-all-container');
-if(phones.length > 12){
+if(phones.length > 12 && !isShowAll){
   showAllContainer.classList.remove('hidden');
 }
 else{
   showAllContainer.classList.add('hidden');
 }
 
- phones = phones.slice(0,12);
+ if(!isShowAll){
+  phones = phones.slice(0,12);
+ }
 
 phones.forEach(phone => {
   const phoneCard = document.createElement('div');
@@ -74,8 +76,8 @@ phones.forEach(phone => {
                         <h2 class="card-title">${phone.phone_name}</h2>
                         <p>A card component has a figure, a body part, and inside body there are title and actions parts
                         </p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-primary">Buy Now</button>
+                        <div class="card-actions justify-center">
+                            <button class="btn btn-primary">Show details</button>
                         </div>
                     </div>
   `
@@ -84,12 +86,12 @@ phones.forEach(phone => {
 toggleLoadingSpinner(false);
 }
 
-const searchHandle = () => {
+const searchHandle = (isShowAll) => {
   toggleLoadingSpinner(true);
   const searchField = document.getElementById('search-field');
   const searchText = searchField.value;
   console.log(searchText);
-  loadphone(searchText)
+  loadphone(searchText,isShowAll)
 }
 
 const toggleLoadingSpinner = (isLoading) => {
@@ -103,4 +105,6 @@ const toggleLoadingSpinner = (isLoading) => {
 
 }
 
-
+const handleShowAll = () => {
+  searchHandle(true);
+}
